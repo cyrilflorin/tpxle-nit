@@ -6,4 +6,6 @@ LOG_LEVEL: debug   # error | warn | info | http | verbose | debug | silly
 
 
 TPXLE_FEED_URL: 'https://dx-api.thingpark.io/location/latest/api/feeds'
+TPXLE_LELAB_FEED_URL: 'https://le-lab.preview.thingpark.com/location/latest/api/feeds'
 DXAPI_TOKEN_REQUEST_URL: 'https://dx-api.thingpark.io/admin/latest/api/oauth/token'
+KEYCLOAK_TOKEN_REQUEST_URL: 'https://le-lab.preview.thingpark.com/auth/realms/le-lab/protocol/openid-connect/token'

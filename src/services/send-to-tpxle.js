@@ -5,19 +5,21 @@ import cfg from '../config.js';
 import logger from '../logger.js';
 
 const getAccessTokenAsync = async (clientID, clientSecret, devEUI) => {
-  /* ** Send accessToken request to DX-API ** */
-  let dxapiTokenResponse;
+  /* ** Send accessToken request to KEYCLOAK ** */
+  let keycloakTokenResponse;
   try {
-    dxapiTokenResponse = await fetch(cfg.DXAPI_TOKEN_REQUEST_URL, {
+    keycloakTokenResponse = await fetch(cfg.KEYCLOAK_TOKEN_REQUEST_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
         Accept: 'application/json',
       },
       body: stringify({
-        grant_type: 'client_credentials',
-        client_id: clientID,
-        client_secret: clientSecret,
+        grant_type: 'password',
+        username: clientID,
+        password: clientSecret,
+        client_id: 'tpx-le-nit',
+        scope: 'openid'
       }),
     });
   } catch (err) {
@@ -25,17 +27,17 @@ const getAccessTokenAsync = async (clientID, clientSecret, devEUI) => {
     return undefined;
   }
   logger.debug(
-    `UL: DevEUI: ${devEUI}: Token requested from DX-API. Response status: ${dxapiTokenResponse.status} ${dxapiTokenResponse.statusText}`,
+    `UL: DevEUI: ${devEUI}: Token requested from KEYCLOAK. Response status: ${keycloakTokenResponse.status} ${keycloakTokenResponse.statusText}`,
   );
 
   let accessTokenParsed;
   try {
-    accessTokenParsed = await dxapiTokenResponse.json();
+    accessTokenParsed = await keycloakTokenResponse.json();
   } catch (err) {
     logger.error(err.stack);
     return accessTokenParsed;
   }
-  logger.debug(`UL: DevEUI: ${devEUI}: Access Token received from DX-API`);
+  logger.debug(`UL: DevEUI: ${devEUI}: Access Token received from KEYCLOAK`);
   return accessTokenParsed.access_token;
 };
 
@@ -52,7 +54,7 @@ const sendToTPXLEAsync = async (translatedBody, accessToken, clientID, clientSec
   /* ** Send traslatedBody to TPX LE ** */
   let tpxleResponse;
   try {
-    tpxleResponse = await fetch(cfg.TPXLE_FEED_URL, {
+    tpxleResponse = await fetch(cfg.TPXLE_LELAB_FEED_URL, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${accessTokenValidated}`,
