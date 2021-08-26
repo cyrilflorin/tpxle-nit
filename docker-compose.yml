@@ -4,14 +4,16 @@ services:
 
   app:
     build: .
-    image: actility/tpxle-nit:0.0.1
-    container_name: tpxle_nit_app
-
+    image: cerealf/tpxle-nit:0.0.1
+    container_name: tpxle-nit-app
     volumes:
     #  - ./src:/opt/tpxle-nit/src
-      - ./config:/opt/tpxle-nit/config
-      - ./log:/opt/tpxle-nit/log
+      - config:/opt/tpxle-nit/config
+      - log:/opt/tpxle-nit/log
     working_dir: /opt/tpxle-nit/src
+    domainname: "tpxle-nit-app"
+    ports:
+      - 80:80
 
     #### FOR PRODUCTION ####
     environment:
@@ -25,13 +27,25 @@ services:
     # command: ["-f","/dev/null"]
     #########################
 
-    ports:
-      - 8081:8081
-
   redis:
     image: redis:alpine
-    container_name: tpxle_nit_redis
+    container_name: tpxle-nit-redis
     volumes:
-      - ./redis-data:/data
-#    ports:
-#      - 6379:6379
+      - redis-data:/data
+
+volumes:
+  config:
+    driver: azure_file
+    driver_opts:
+      share_name: tpxle-nit-vol
+      storage_account_name: tpxlestorage
+  log:
+    driver: azure_file
+    driver_opts:
+      share_name: tpxle-nit-vol
+      storage_account_name: tpxlestorage
+  redis-data:
+    driver: azure_file
+    driver_opts:
+      share_name: tpxle-nit-vol
+      storage_account_name: tpxlestorage

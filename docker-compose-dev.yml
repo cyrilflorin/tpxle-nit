@@ -4,11 +4,11 @@ services:
 
   app:
     build: .
-    image: actility/tpxle-nit:0.0.1
-    container_name: tpxle_nit_app
+    image: cerealf/tpxle-nit:0.0.1
+    container_name: tpxle-nit-app
 
     volumes:
-      - ./src:/opt/tpxle-nit/src
+    #  - ./src:/opt/tpxle-nit/src
       - ./config:/opt/tpxle-nit/config
       - ./log:/opt/tpxle-nit/log
     working_dir: /opt/tpxle-nit/src
@@ -26,12 +26,12 @@ services:
     #########################
 
     ports:
-      - 8081:8081
+      - 80:80
 
   redis:
     image: redis:alpine
-    container_name: tpxle_nit_redis
+    container_name: tpxle-nit-redis
     volumes:
       - ./redis-data:/data
-#    ports:
-#      - 6379:6379
+    ports:
+      - 6379:6379
